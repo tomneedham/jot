@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<info>
+    <id>jot</id>
+    <name>Jot</name>
+    <description>An alternative ownCloud notes application</description>
+    <version>0.1</version>
+    <licence>AGPL</licence>
+    <author>Tom Needham</author>
+    <requiremin>7</requiremin>
+    <website>https://github.com/tomneedham/jot</website>
+</info>

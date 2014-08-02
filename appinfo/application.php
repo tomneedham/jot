@@ -22,5 +22,12 @@ class Application extends App {
                 $c->query('Request')
             );
         });
+
+        /**
+         * Database Layer
+         */
+        $container->registerService('ItemMapper', function($c) {
+            return new ItemMapper($c->query('ServerContainer')->getDb());
+        });
     }
 }

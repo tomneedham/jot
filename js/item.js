@@ -14,10 +14,10 @@
 (function() {
 
 	/**
-	 * $el is the .jot-item element
+	 * el is the .jot-item element
 	 */
-	var Item = function($el){
-		this.initialise($el);
+	var Item = function(el){
+		this.initialise(el);
 	};
 
 	Item.prototype = {

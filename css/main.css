@@ -1,0 +1,90 @@
+div.jot-wrapper {
+	margin: 8px;
+}
+
+div.jot-item {
+	padding: 8px;
+	width: 100%;
+}
+
+div.jot-item-content:hover {
+	background-color: #eee;
+}
+
+div.jot-item-content h2 {
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+
+
+div.jot-item-content {
+	background-color: #f5f5f5;
+	padding: 15px;
+	box-shadow: 3px 3px 1px #ccc;
+}
+
+textarea.jot-title-input {
+    font-size: 16px;
+	font-weight: 600;
+}
+
+.jot-item-content > div.expanding-wrapper {
+	margin-bottom: 10px;
+}
+
+textarea.jot-input {
+	background: transparent;
+    border: none;
+    width: 100%;
+	padding: 0;
+	color: #000;
+}
+
+/* Effect 2: Move Up */
+.jot-items div.jot-item.animate {
+	-webkit-transform: translateY(200px);
+	transform: translateY(200px);
+	-webkit-animation: moveUp 0.65s ease forwards;
+	animation: moveUp 0.65s ease forwards;
+}
+
+@-webkit-keyframes moveUp {
+	0% { }
+	100% { -webkit-transform: translateY(0); opacity: 1; }
+}
+
+@keyframes moveUp {
+	0% { }
+	100% { -webkit-transform: translateY(0); transform: translateY(0); opacity: 1; }
+}
+
+#app-navigation > ul > li a.inset-button {
+	display: inline;
+	position: absolute;
+	top: 7px;
+	right: 0;
+	width: auto;
+	height: 30px;
+	font-size: 18px;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	line-height: 27px;
+	margin-right: 8px;
+}
+
+a.jot-item-delete {
+	width: 44px;
+	height: 44px;
+	display: none;
+	position: absolute;
+	top: 2px;
+	right: -1px;
+	opacity: 0.4;
+}
+
+a.jot-item-delete:hover {
+	opacity: 0.7;
+}

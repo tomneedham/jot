@@ -1,0 +1,61 @@
+/* Responsive sizing of bricks */
+
+@media (max-width: 770px) and (min-width: 500px) {
+  /* 10 columns for larger screens */
+  .jot-item { width: 50% !important; }
+}
+
+@media (max-width: 970px) and (min-width: 850px) {
+  /* 10 columns for larger screens */
+  .jot-item { width: 50% !important; }
+}
+
+@media (max-width: 1150px) and (min-width: 970px) {
+  /* 10 columns for larger screens */
+  .jot-item { width: 33.333% !important; }
+}
+
+@media (min-width: 1150px) {
+  /* 10 columns for larger screens */
+  .jot-item { width: 25% !important; }
+}
+
+/* Hide these in normal view */
+
+#controls {
+	display: none;
+}
+
+
+
+/* Mobile display adjustments */
+@media (max-width: 770px) {
+  
+  a.jot-item-delete {
+  	display: block !important;
+  }
+
+  a.inset-button {
+		display: none !important;
+	}
+  #controls {
+  	display: block;
+  }
+
+  div.jot-wrapper {
+  	margin-top: 45px;
+  }
+
+  div.crumb.last {
+  	background: none;
+  }
+
+  a.add-jot-item {
+  	font-weight: 100;
+	padding: 4px 9px !important;
+	height: auto !important;
+	margin-top: 8px;
+	margin-left: 15px;
+  }
+
+}

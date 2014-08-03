@@ -7,8 +7,11 @@ use \OCP\AppFramework\Db\Mapper;
 
 class ItemMapper extends Mapper {
 
-    public function __construct(IDb $db) {
+    private $spaceMapper;
+
+    public function __construct(IDb $db, SpaceMapper $spaceMapper) {
         parent::__construct($db, 'jot_items');
+        $this->spaceMapper = $spaceMapper;
     }
 
 
@@ -17,27 +20,20 @@ class ItemMapper extends Mapper {
      * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException if more than one result
      */
     public function find($id) {
-        $sql = 'SELECT * FROM `*prefix*myapp_authors` ' .
+        $sql = 'SELECT * FROM `*prefix*jot_items` ' .
             'WHERE `id` = ?';
         return $this->findEntity($sql, array($id));
     }
 
 
-    public function findAll($limit=null, $offset=null) {
-        $sql = 'SELECT * FROM `*prefix*myapp_authors`';
-        return $this->findEntities($sql, $limit, $offset);
-    }
-
-
-    public function authorNameCount($name) {
-        $sql = 'SELECT COUNT(*) AS `count` FROM `*prefix*myapp_authors` ' .
-            'WHERE `name` = ?';
-        $query = $this->db->prepareQuery($sql);
-        $query->bindParam(1, $name, \PDO::PARAM_STR);
-        $result = $query->execute();
-
-        while($row = $result->fetchRow()) {
-            return $row['count'];
+    public function findAll($userid, $space=null, $limit=null, $offset=null) {
+        if(is_null($space)) {
+            $sql = 'SELECT * FROM `*prefix*jot_items`';
+            return $this->findEntities($sql, array(), $limit, $offset);
+        } else {
+            $sql = 'SELECT * FROM `*prefix*jot_items`' .
+            'WHERE `space` = ?';;
+            return $this->findEntities($sql, array($this->spaceMapper->getID($userid, $space)), $limit, $offset);
         }
     }
 

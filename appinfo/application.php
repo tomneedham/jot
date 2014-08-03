@@ -22,12 +22,22 @@ class Application extends App {
                 $c->query('Request')
             );
         });
+        $container->registerService('ItemApiController', function($c) {
+            return new PageController(
+                $c->query('AppName'),
+                $c->query('Request'),
+                $c->query('UserId')
+            );
+        });
 
         /**
          * Database Layer
          */
         $container->registerService('ItemMapper', function($c) {
             return new ItemMapper($c->query('ServerContainer')->getDb());
+        });
+        $container->registerService('SpaceMapper', function($c) {
+            return new SpaceMapper($c->query('ServerContainer')->getDb());
         });
     }
 }

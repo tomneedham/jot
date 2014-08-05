@@ -1,5 +1,6 @@
 div.jot-wrapper {
 	margin: 8px;
+	overflow-x: hidden;
 }
 
 div.jot-item {
@@ -25,7 +26,7 @@ div.jot-item-content {
 	box-shadow: 3px 3px 1px #ccc;
 }
 
-textarea.jot-title-input {
+textarea.jot-title {
     font-size: 16px;
 	font-weight: 600;
 }
@@ -75,16 +76,20 @@ textarea.jot-input {
 	margin-right: 8px;
 }
 
-a.jot-item-delete {
+.jot-item-content .item-state-icon {
 	width: 44px;
 	height: 44px;
 	display: none;
 	position: absolute;
 	top: 2px;
 	right: -1px;
+	opacity: 0.7
+}
+
+.jot-item-content .icon-close {
 	opacity: 0.4;
 }
 
-a.jot-item-delete:hover {
+.jot-item-content .icon-close:hover {
 	opacity: 0.7;
 }

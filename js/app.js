@@ -39,6 +39,7 @@
 				OCA.Jot.App.items.push(item);
 				// Since they are already there, trigger the postInsert method
 				item.postInsert();
+				item.new = false;
 			});
 
 			this.appBinds();
@@ -65,7 +66,7 @@
 		addItem: function() {
 			// Add the html
 			var item = document.createElement('div');
-			item.innerHTML = '<div class="jot-item-content" style="padding-bottom: 5px;"><a class="icon-close jot-item-delete"></a><textarea placeholder="Title" rows=1 autofocus class="jot-input jot-title-input"></textarea><textarea class="jot-input jot-content-input" placeholder="An interesting note..." rows=1 style=""></textarea></div>';
+			item.innerHTML = '<div class="jot-item-content" style="padding-bottom: 5px;"><a class="item-state-icon icon-close"></a><textarea placeholder="Title" rows=1 autofocus class="jot-input jot-title"></textarea><textarea class="jot-input jot-content" placeholder="An interesting note..." rows=1 style=""></textarea></div>';
 			item.className = 'jot-item';
 			var i = new OCA.Jot.Item(item);
 			this.prependItem(i);
@@ -95,9 +96,9 @@
 		},
 
 		/**
-		 * Deletes a given item
+		 * Removes a given item
 		 */
-		deleteItem: function(item) {
+		removeItem: function(item) {
 			this.container.isotope('remove', item.el);
 			item.delete();
 			this.updateLayout();

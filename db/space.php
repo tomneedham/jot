@@ -10,7 +10,5 @@ class Space extends Entity {
     private $userid;
 
     public function __construct() {
-        $this->addType('name', 'text');
-        $this->addType('userid', 'text');
     }
 }

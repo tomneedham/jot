@@ -6,17 +6,32 @@ use \OCP\AppFramework\Db\Entity;
 
 class Item extends Entity {
 
-    private $created;
-    private $modified;
-    private $title;
-    private $content;
-    private $userid;
+    protected $created;
+    protected $modified;
+    protected $title;
+    protected $content;
+    protected $userid;
+    protected $spaceid;
+    protected $archived;
+    protected $type;
 
     public function __construct() {
         $this->addType('created', 'integer');
         $this->addType('modified', 'integer');
-        $this->addType('title', 'text');
-        $this->addType('content', 'text');
-        $this->addType('userid', 'text');
+        $this->addType('spaceid', 'integer');
+        $this->addType('archived', 'boolean');
+    }
+
+    public function toAPI() {
+        return array(
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'content' => $this->getContent(),
+            'created' => $this->getCreated(),
+            'modified' => $this->getModified(),
+            'space' => $this->getSpaceid(),
+            'type' => $this->getType(),
+            'archived' => $this->getArchived()
+        );
     }
 }

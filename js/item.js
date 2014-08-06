@@ -36,15 +36,22 @@
 
 		saving: false,
 
+		saveTimer: null,
+
 		initialise: function(el) {
 			this.el = el;
 			// get id, if there then this.new = false, else id is returnd on first save		
-			var id = $(this.el).data('id');
-			if(id !== undefined) {
+			if(this.getId() !== undefined) {
 				this.new = false;
-			} else {
-				this.id = id;
 			}
+		},
+
+		getId: function() {
+			return $(this.e).attr('data-id');
+		},
+
+		setId: function(id) {
+			$(this.el).attr('data-id', id);
 		},
 
 		getTitle: function() {
@@ -80,18 +87,21 @@
 			this.setIcon('delete');
 
 			// Trigger a save
-			$('textarea.jot-content').keyup(function(e) {
+			$(this.el).find('textarea.jot-content').keyup(function(e) {
 				_self._onContentUpdate();
+				_self._startSaveTimer();
 			});
 
-			$('textarea.jot-title').keydown(function(e) {
+			$(this.el).find('textarea.jot-title').keydown(function(e) {
 				if(e.keyCode == 13){
 					e.preventDefault();
 					_self._onTitleEnter();
 				}
 			});
 
-			$(this.el).find('textarea.jot-title, textarea.jot-content').bind('focusout', function(e){ _self.save(); });
+			$(this.el).find('textarea.jot-title').bind('focusout', function(e){ _self.save(); });
+
+			OCA.Jot.App.updateLayout();
 
 		},
 
@@ -114,20 +124,21 @@
 						if(data.success) {
 							_self.setIcon('done');
 							setTimeout(function(){ _self.setIcon('delete') }, 1000);
-							_self.id = data.id;
+							_self.setId(data.id);
 							_self.new = false
 						} else {
 							// Failed to creata the note and save the data
 							_self.setIcon('failed');
 							_self.saved = false;
 						}
+						this.saving = false;
 					},
 					"json"
 				);
 			} else {
 				// Normal update
 				$.ajax({
-					url: OC.generateUrl('/apps/jot/api/1.0/items/'+this.id),
+					url: OC.generateUrl('/apps/jot/api/1.0/items/'+$(this.el).attr('data-id')), // WTF why wont this.getId() work here...
 					data: { title: this.getTitle(), content: this.getContent() },
 					success: function(data) {
 						if(data.success) {
@@ -139,12 +150,12 @@
 							_self.setIcon('failed');
 							setTimeout(function(){ _self.setIcon('delete') }, 1000);
 						}
+						this.saving = false;
 					},
 					dataType: "json",
 					method: 'PUT',
 				});
 			}
-			this.saving = false;
 		},
 
 		/**
@@ -164,7 +175,6 @@
 						.addClass('icon-close item-state-icon')
 						.bind('click', function(){ 
 							_self.archive();
-							OCA.Jot.App.removeItem(_self);
 						});
 				break;
 				case 'done':
@@ -179,13 +189,16 @@
 		},
 
 		archive: function() {
-			alert(this.id);
-			$.ajax({
-				url: OC.generateUrl('/apps/jot/api/1.0/items/'+this.id),
-				data: { archived: true },
-				dataType: "json",
-				method: 'PUT',
-			});
+			if(!this.new) {
+				$.ajax({
+					url: OC.generateUrl('/apps/jot/api/1.0/items/')+$(this.el).attr('data-id'), // WTF why won't this.getId() work here.....
+					data: { archived: true },
+					dataType: "json",
+					method: 'PUT',
+				});
+			}
+			OCA.Jot.App.removeItemFromView(this);
+			
 		},
 
 		/** 
@@ -204,8 +217,19 @@
 		_onContentUpdate: function(e) {
 			this.saved = false;
 			OCA.Jot.App.updateLayout();
-			this.save(); // This shoudl not happen every keyup
-		}
+		},
+
+		/**
+		 * Attempts to save after 2000ms of inactivity
+		 */
+		_startSaveTimer: function() {
+			var _self = this;
+			clearTimeout(this.saveTimer);
+			this.saveTimer = setTimeout(function(){
+				_self.save();
+			}, 2000);
+
+		},
 
 	}
 

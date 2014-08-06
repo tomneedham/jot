@@ -25,7 +25,10 @@ class PageController extends Controller {
     	$templateName = 'main';
     	$items = $this->itemMapper->fetchView($this->userid, null, 20);
     	$items = is_null($items) ? array() : $items;
-        $parameters = array('items' => $items);
+        $parameters = array(
+        	'items' => $items,
+        	'appversion' => \OCP\App::getAppVersion('jot')
+        );
         return new TemplateResponse($this->appName, $templateName, $parameters);
     }
 

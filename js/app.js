@@ -70,6 +70,7 @@
 			item.className = 'jot-item';
 			var i = new OCA.Jot.Item(item);
 			this.prependItem(i);
+			$(i.el).find('textarea.jot-title').focus();
 		},
 
 		/**
@@ -77,8 +78,7 @@
 		 */
 		prependItem: function(item) {
 			this.items.unshift(item);
-			var elems = [];
-			elems.push(item.el);
+			var elems = [item.el];
 			this.container.prepend(elems).isotope('prepended', elems);
 			item.postInsert();
 			this.updateLayout();
@@ -89,8 +89,7 @@
 		 */
 		appendItem: function(item) {
 			this.items.push(item);
-			var elems = [];
-			elems.push(item); 
+			var elems = [item.el];
 			this.container.append(elems).isotope( 'appended', elems);
 			item.postInsert();
 		},
@@ -98,10 +97,10 @@
 		/**
 		 * Removes a given item
 		 */
-		removeItem: function(item) {
+		removeItemFromView: function(item) {
 			this.container.isotope('remove', item.el);
-			item.delete();
 			this.updateLayout();
+			// Todo remove from OCA.Jot.App.Items
 		},
 
 		/**
@@ -120,4 +119,5 @@
 // Go go go
 $(document).ready(function() {
 	OCA.Jot.App.initialize();
+	
 });

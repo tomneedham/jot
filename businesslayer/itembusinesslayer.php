@@ -41,6 +41,7 @@ class ItemBusinessLayer {
 		$item->setTitle($title);
 		$item->setSpaceid($space);
 		$item->setUserid($userid);
+		$item->setType($type);
 		return $this->itemMapper->insert($item);
 	}
 

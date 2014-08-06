@@ -82,8 +82,8 @@ class ItemApiController extends ApiController {
         $item = $this->bl->create(
             $title,
             $this->userid,
-            $content,
             'text',
+            $content,
             time(),
             time(),
             $space

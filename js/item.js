@@ -131,7 +131,7 @@
 							_self.setIcon('failed');
 							_self.saved = false;
 						}
-						this.saving = false;
+						_self.saving = false;
 					},
 					"json"
 				);
@@ -150,7 +150,7 @@
 							_self.setIcon('failed');
 							setTimeout(function(){ _self.setIcon('delete') }, 1000);
 						}
-						this.saving = false;
+						_self.saving = false;
 					},
 					dataType: "json",
 					method: 'PUT',

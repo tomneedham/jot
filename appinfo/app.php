@@ -5,6 +5,6 @@
     'id' => 'jot',
     'order' => 100,
     'href' => \OCP\Util::linkToRoute('jot.page.index'),
-    'icon' => \OCP\Util::imagePath('jot', 'icon.svg'),
+    'icon' => \OCP\Util::imagePath('jot', 'app.svg'),
     'name' => 'Jot',//\OC_L10N::get('Jot')->t('Jot'),
     ));

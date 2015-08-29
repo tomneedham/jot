@@ -40,7 +40,7 @@
 
 		initialise: function(el) {
 			this.el = el;
-			// get id, if there then this.new = false, else id is returnd on first save		
+			// get id, if there then this.new = false, else id is returnd on first save
 			if(this.getId() !== undefined) {
 				this.new = false;
 			}
@@ -116,7 +116,7 @@
 			// Pretend that we have saved changes, so that we can detect more during saving
 			this.saved = true;
 			if(this.new) {
-				// First save, create item, return ida
+				// First save, create item, return id
 				$.post(
 					OC.generateUrl('/apps/jot/api/1.0/items/'),
 					{ title: this.getTitle(), content: this.getContent() },
@@ -127,7 +127,7 @@
 							_self.setId(data.id);
 							_self.new = false
 						} else {
-							// Failed to creata the note and save the data
+							// Failed to create the note and save the data
 							_self.setIcon('failed');
 							_self.saved = false;
 						}
@@ -173,7 +173,7 @@
 						.find('.item-state-icon')
 						.removeAttr('class')
 						.addClass('icon-close item-state-icon')
-						.bind('click', function(){ 
+						.bind('click', function(){
 							_self.archive();
 						});
 				break;
@@ -198,10 +198,10 @@
 				});
 			}
 			OCA.Jot.App.removeItemFromView(this);
-			
+
 		},
 
-		/** 
+		/**
 		 * Event handler when enter is pressed in title
 		 */
 		_onTitleEnter: function() {
@@ -236,5 +236,3 @@
 	OCA.Jot.Item = Item;
 
 })();
-
-

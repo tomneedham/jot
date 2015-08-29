@@ -20,17 +20,10 @@
   .jot-item { width: 25% !important; }
 }
 
-/* Hide these in normal view */
-
-#controls {
-	display: none;
-}
-
-
 
 /* Mobile display adjustments */
 @media (max-width: 770px) {
-  
+
   a.jot-item-delete {
   	display: block !important;
   }
@@ -38,13 +31,6 @@
   a.inset-button {
 		display: none !important;
 	}
-  #controls {
-  	display: block;
-  }
-
-  div.jot-wrapper {
-  	margin-top: 45px;
-  }
 
   div.crumb.last {
   	background: none;

@@ -15,11 +15,7 @@
 
 <div id="app">
 
-	<?php print_unescaped($this->inc("part.navigation")); ?>
-
 	<div id="app-content">
-		
-		<?php print_unescaped($this->inc("part.controls")); ?>
 
 		<?php print_unescaped($this->inc("part.cards")); ?>
 

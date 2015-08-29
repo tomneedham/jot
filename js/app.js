@@ -18,7 +18,7 @@
 	}
 
 	var App = {
-		
+
 		container: null,
 
 		items: [],
@@ -33,14 +33,21 @@
 				layoutMode: 'masonry'
 			});
 
-			// Find all the .jot-item's and initialise them all
-			$('.jot-item').each(function() {
-				var item = new OCA.Jot.Item($(this));
-				OCA.Jot.App.items.push(item);
-				// Since they are already there, trigger the postInsert method
-				item.postInsert();
-				item.new = false;
-			});
+			// Load dummy or real?
+			if($('.jot-items').data('count') == 0) {
+				// Load a dummy item
+				this.addItem();
+			} else {
+				// Load real deal
+				// Find all the .jot-item's and initialise them all
+				$('.jot-item').each(function() {
+					var item = new OCA.Jot.Item($(this));
+					OCA.Jot.App.items.push(item);
+					// Since they are already there, trigger the postInsert method
+					item.postInsert();
+					item.new = false;
+				});
+			}
 
 			this.appBinds();
 		},
@@ -63,10 +70,16 @@
 		/**
 		 * Inserts a new item into the container
 		 */
-		addItem: function() {
+		addItem: function(title, content) {
+			if(content == undefined) {
+				var content = '';
+			}
+			if(title == undefined) {
+				var title = '';
+			}
 			// Add the html
 			var item = document.createElement('div');
-			item.innerHTML = '<div class="jot-item-content" style="padding-bottom: 5px;"><a class="item-state-icon icon-close"></a><textarea placeholder="Title" rows=1 autofocus class="jot-input jot-title"></textarea><textarea class="jot-input jot-content" placeholder="An interesting note..." rows=1 style=""></textarea></div>';
+			item.innerHTML = '<div class="jot-item-content" style="padding-bottom: 5px;"><a class="item-state-icon icon-close"></a><textarea placeholder="Title" rows=1 autofocus class="jot-input jot-title">'+title+'</textarea><textarea class="jot-input jot-content" placeholder="An interesting note..." rows=1 style="">'+content+'</textarea></div>';
 			item.className = 'jot-item';
 			var i = new OCA.Jot.Item(item);
 			this.prependItem(i);
@@ -119,5 +132,5 @@
 // Go go go
 $(document).ready(function() {
 	OCA.Jot.App.initialize();
-	
+
 });

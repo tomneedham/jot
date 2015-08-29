@@ -13,4 +13,3 @@
 		<!-- End items -->
 	</div>
 </div>
-<a class="button add-jot-item">Add Jot</a>

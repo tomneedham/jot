@@ -70,7 +70,6 @@ class ItemApiController extends ApiController {
     }
 
     /**
-     * @CORS
      * @NoAdminRequired
      * @NoCSRFRequired
      */

@@ -1,10 +1,8 @@
-jot
-===
+# Jot
+An alternative ownCloud notes application. 
 
-An alternative ownCloud notes application
+## Install
+Simply copy (or clone) the `jot` folder over to your `apps` direcotry and enable it via the settings page.
 
-
-Credits
-====
-App icon credit to Mun May Tee (http://www.thenounproject.com/munmay), from The Noun Project (http://www.thenounproject.com)
-
+## Contributors
+[Tom Needham](http://github.com/tomneedham)_

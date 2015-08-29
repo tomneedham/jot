@@ -27,7 +27,6 @@ class ItemApiController extends ApiController {
     }
 
     /**
-     * @CORS
      * @NoAdminRequired
      * @NoCSRFRequired
      */
@@ -96,7 +95,6 @@ class ItemApiController extends ApiController {
     }
 
     /**
-     * @CORS
      * @NoAdminRequired
      * @NoCSRFRequired
      */

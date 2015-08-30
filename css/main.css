@@ -75,7 +75,7 @@ textarea.jot-input {
 }
 
 .jot-item-content .icon-close {
-	opacity: 0.4;
+	opacity: 0.2;
 }
 
 .jot-item-content .icon-close:hover {
@@ -89,4 +89,7 @@ a.add-jot-item {
 	height: auto !important;
 	margin-top: 8px;
 	margin-left: 15px;
+	margin-right: 17px;
+	position: absolute;
+	right: 7px;
 }

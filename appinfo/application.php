@@ -1,17 +1,12 @@
 <?php
 namespace OCA\Jot\AppInfo;
 
-use \OCP\AppFramework\App;
+use OCP\AppFramework\App;
 
-use \OCA\Jot\Controller\PageController;
-use \OCA\Jot\Controller\ItemApiController;
-
-use \OCA\Jot\Db\ItemMapper;
-use \OCA\Jot\Db\Item;
-use \OCA\Jot\Db\SpaceMapper;
-use \OCA\Jot\Db\Space;
-
-use \OCA\Jot\BusinessLayer\ItemBusinessLayer;
+use OCA\Jot\Controller\PageController;
+use OCA\Jot\Controller\JotApiController;
+use OCA\Jot\Lib\JotService;
+use OCA\Jot\Lib\Jot;
 
 class Application extends App {
 
@@ -27,58 +22,31 @@ class Application extends App {
             return new PageController(
                 $c->query('AppName'),
                 $c->query('Request'),
-                $c->query('ItemMapper'),
-                $c->query('UserId')
+                $c->query('JotService'),
+                $c->getServer()->getUserSession()->getUser()
             );
         });
-        $container->registerService('ItemApiController', function($c) {
-            return new ItemApiController(
+        $container->registerService('JotApiController', function($c) {
+            return new JotApiController(
                 $c->query('AppName'),
                 $c->query('Request'),
-                $c->query('ItemMapper'),
-                $c->query('UserId'),
-                $c->query('ItemBusinessLayer'),
-                $c->query('Item')
+                $c->getServer()->getUserSession()->getUser(),
+                $c->query('JotService')
             );
         });
 
-
-
-        $container->registerService('UserId', function() {
-            return \OCP\User::getUser();
-        });
-        $container->registerService('Db', function() {
-            return new Db();
-        });
-
-        $container->registerService('ItemMapper', function($c) {
-            return new ItemMapper(
-                $c->query('ServerContainer')->getDb(),
-                $c->query('SpaceMapper')
-            );
-        });
-        $container->registerService('SpaceMapper', function($c) {
-            return new SpaceMapper(
-                $c->query('ServerContainer')->getDb()
+        $container->registerService('JotService', function($c) {
+            return new JotService(
+                $c->query('AppName'),
+                $c->getServer()->getRootFolder(),
+                $c->query('Jot'),
+                $c->getServer()->getConfig(),
+                $c->getServer()->getUserSession()->getUser()
             );
         });
 
-        $container->registerService('Space', function($c) {
-            return new Space();
-        });
-
-        $container->registerService('Item', function($c) {
-            return new Item();
-        });
-
-        /**
-         * Business Layer
-         */
-        $container->registerService('ItemBusinessLayer', function($c) {
-            return new ItemBusinessLayer(
-                $c->query('Item'),
-                $c->query('ItemMapper')    
-            );
+        $container->registerService('Jot', function($c) {
+            return new Jot();
         });
 
     }

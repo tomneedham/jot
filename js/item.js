@@ -76,11 +76,11 @@
 			$(this.el).hover(
 				function() {
 					if(!this.saving){
-						$(_self.el).find('.icon-close').show();
+						$(_self.el).find('.item-state-icon').show();
 					}
 				},
 				function() {
-					$(_self.el).find('.icon-close').hide();
+					$(_self.el).find('.item-state-icon').hide();
 				}
 			);
 
@@ -118,7 +118,7 @@
 			if(this.new) {
 				// First save, create item, return id
 				$.post(
-					OC.generateUrl('/apps/jot/api/1.0/items/'),
+					OC.generateUrl('/apps/jot/api/1.0/jots/'),
 					{ title: this.getTitle(), content: this.getContent() },
 					function(data) {
 						if(data.success) {
@@ -138,7 +138,7 @@
 			} else {
 				// Normal update
 				$.ajax({
-					url: OC.generateUrl('/apps/jot/api/1.0/items/'+$(this.el).attr('data-id')), // WTF why wont this.getId() work here...
+					url: OC.generateUrl('/apps/jot/api/1.0/jots/'+$(this.el).attr('data-id')), // WTF why wont this.getId() work here...
 					data: { title: this.getTitle(), content: this.getContent() },
 					success: function(data) {
 						if(data.success) {

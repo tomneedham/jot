@@ -68,7 +68,7 @@
 		postInsert: function() {
 
 			var _self = this,
-				_selfTextAreaContent = this.el.find('textarea.jot-content');
+				_selfTextAreaContent = $(this.el).find('textarea.jot-content');
 
 			// Bind events
 			$('textarea.jot-input').expanding({ update: OCA.Jot.App.updateLayout() });
@@ -103,7 +103,7 @@
 
 			_selfTextAreaContent.keyup(function(e) {
 				if (e.which === 13) {
-					_self._onContentEnterPress(_selfTextAreaContent);
+					_self._onContentEnterPress(_selfTextAreaContent[0]);
 				}
 			});
 
@@ -260,7 +260,7 @@
 		 * @private
 		 */
 		_onContentEnterPress: function(textarea) {
-			var contentToSelection = textarea.substring(0, textarea.selectionStart),
+			var contentToSelection = textarea.value.substring(0, textarea.selectionStart),
 				line = contentToSelection.split('\n');
 
 			if (line.length > 1) {
@@ -284,12 +284,12 @@
 						}
 						var selectionPosition = textarea.selectionStart + (indentation + firstCharacter + indentationAfterMarker).length;
 
-						this.value =
+						textarea.value =
 							contentToSelection +
 							indentation +
 							firstCharacter +
 							indentationAfterMarker +
-							textarea.value.substr(this.selectionStart);
+							textarea.value.substr(textarea.selectionStart);
 
 						if (textarea.createTextRange) { // Internet Explorer
 							var range = textarea.createTextRange();

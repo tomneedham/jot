@@ -6,6 +6,7 @@ class Jot {
     protected $title;
     protected $content;
     protected $id;
+    protected $mTime;
 
     public function setId($id) {
         $this->id = $id;
@@ -29,6 +30,23 @@ class Jot {
 
     public function getId() {
         return $this->id;
+    }
+
+    public function setMTime($mtime) {
+        $this->mTime = $mtime;
+    }
+
+    public function getMTime() {
+        return $this->mTime;
+    }
+
+    public function toArray() {
+        return array(
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'content' => $this->getContent(),
+            'mtime' => $this->getMTime()
+        );
     }
 
 }

@@ -6,6 +6,7 @@ use OCP\IRequest;
 use OCP\AppFramework\Http\JSONResponse;
 use OCA\Jot\Lib\JotService;
 use OCA\Jot\Lib\Jot;
+use OCP\IUser;
 
 
 class JotApiController extends ApiController {
@@ -41,29 +42,22 @@ class JotApiController extends ApiController {
     /**
      * @NoAdminRequired
      * @NoCSRFRequired
+	 * Updates the attributes of a jot
+	 * @param integer $id the jot file id
+	 * @param string $title
+	 * @param string $content
     */
-    public function updateItem($id, $title, $content, int $archived, int $modified) {
-        $item = $this->item;
-        $item->setId($id);
-        if(!is_null($title)) {
-            $item->setTitle($title);
-        }
-        if(!is_null($content)) {
-            $item->setContent($content);
-        }
-        if(!is_null($modified)) {
-            $item->setContent($modified);
-        }
-        if(!is_null($archived)) {
-            $item->setArchived($archived);
-        }
-        $item->setModified(time());
-        try {
-            $this->itemMapper->update($item);
-            return new JSONResponse(array('success' => true));
-        } catch (InvalidArgumentException $e) {
-            return new JSONResonse(array('success' => false, 'message' => $e->getMessage()));
-        }
+    public function updateItem($id, $title, $content) {
+        // TODO validation
+		try {
+			$jot = $this->jotService->loadFromID($id, $this->user);
+			$jot->setTitle($title);
+			$jot->setContent($content);
+			$this->jotService->saveJot($jot);
+			return new JSONResponse($jot->toArray());
+		} catch (\Exception $e) {
+			die($e->getMessage());
+		}
     }
 
     /**
@@ -75,8 +69,8 @@ class JotApiController extends ApiController {
 		$jot->setTitle($title);
 		$jot->setContent($content);
 		try {
-			$id = $this->jotService->createJot($jot, $this->user);
-			return new JSONResponse($id);
+			$jot = $this->jotService->saveJot($jot, $this->user);
+			return new JSONResponse($jot->toArray());
 		} catch (\Exception $e) {
 			// Shit went down
 			die($e->getMessage());

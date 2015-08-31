@@ -6,6 +6,7 @@ use OCP\Files\IRootFolder;
 use OCP\IUser;
 use OCP\IConfig;
 use OCA\Jot\Lib\Jot;
+use OCP\Files\File;
 
 class JotService {
 
@@ -111,10 +112,22 @@ class JotService {
         $jot = new Jot();
         $jot->setID($file->getId());
         $data = explode("\n", $file->getContent(),2);
-        $jot->setTitle($data[0]);
-        $jot->setContent($data[1]);
+        empty($data[0]) ? $jot->setTitle('') : $jot->setTitle($data[0]);
+        empty($data[1]) ? $jot->setContent('') : $jot->setContent($data[1]);
+        $jot->setMTime($file->getMTime());
         return $jot;
     }
+
+    /**
+     * Load a jot from a file id
+     * @param integer $id
+     * @param IUser $user
+     * @return Jot
+     */
+     public function loadFromID($id, $user) {
+         $file = current($this->getJotsFolder($user)->getByID($id));
+         return $this->loadFromFile($file);
+     }
 
     /**
      * Converts the first line of text to a save filename string
@@ -125,17 +138,24 @@ class JotService {
         return $in;
     }
 
-    /**
-     * Creates a jot in the filesystem
-     * @param Jot
-     * @return integer
-     */
-    public function createJot(Jot $jot, IUser $user) {
-        $jots = $this->getJotsFolder($user);
-        $name = $jots->getNonExistingName($this->createSafeFilename($jot->getTitle()));
-        $jotFile = $jots->newFile($name.'.txt');
-        $jotFile->putContent($jot->getContent());
-        return $jotFile->getId();
+    public function saveJot($jot) {
+        $jotsFolder = $this->getJotsFolder($this->user);
+        // Has an id?
+        if(empty($jot->getId())) {
+            // Create the file
+            $name = $jotsFolder->getNonExistingName($this->createSafeFilename($jot->getTitle()));
+            $jotFile = $jotsFolder->newFile($name.'.txt');
+            $jot->setId($jotFile->getId());
+        } else {
+            $jotFile = current($jotsFolder->getById($jot->getId()));
+        }
+        $jotFile->putContent($jot->getTitle()."\n".$jot->getContent());
+        if($jot->getTitle().'.txt' != $jotFile->getName()) {
+            // Update the filename
+            $name = $jotsFolder->getNonExistingName($this->createSafeFilename($jot->getTitle()));
+            $jotFile->move($jotFile->getParent()->getPath().'/'.$name.'.txt');
+        }
+        return $jot;
     }
 
 }

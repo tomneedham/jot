@@ -3,6 +3,9 @@ namespace OCA\Jot\Controller;
 
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\TemplateResponse;
+use OCP\IUser;
+use OCA\Jot\Lib\JotService;
+
 
 
 class PageController extends Controller {

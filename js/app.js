@@ -23,6 +23,10 @@
 
 		items: [],
 
+		settings: {
+			listCharacters: ['-', '*', '+'],
+		},
+
 		/**
 		 * Starts the application
 		 */

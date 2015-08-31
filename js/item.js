@@ -67,7 +67,8 @@
 		 */
 		postInsert: function() {
 
-			var _self = this;
+			var _self = this,
+				_selfTextAreaContent = this.el.find('textarea.jot-content');
 
 			// Bind events
 			$('textarea.jot-input').expanding({ update: OCA.Jot.App.updateLayout() });
@@ -87,7 +88,7 @@
 			this.setIcon('delete');
 
 			// Trigger a save
-			$(this.el).find('textarea.jot-content').keyup(function(e) {
+			_selfTextAreaContent.keyup(function(e) {
 				_self._onContentUpdate();
 				_self._startSaveTimer();
 			});
@@ -96,6 +97,13 @@
 				if(e.keyCode == 13){
 					e.preventDefault();
 					_self._onTitleEnter();
+				}
+			});
+
+
+			_selfTextAreaContent.keyup(function(e) {
+				if (e.which === 13) {
+					_self._onContentEnterPress(_selfTextAreaContent);
 				}
 			});
 
@@ -243,6 +251,58 @@
 				_self.save();
 			}, 2000);
 
+		},
+
+		/**
+		 * Event handler fired when the content area detects an enter key press
+		 *
+		 * @param textarea the textarea that was affected
+		 * @private
+		 */
+		_onContentEnterPress: function(textarea) {
+			var contentToSelection = textarea.substring(0, textarea.selectionStart),
+				line = contentToSelection.split('\n');
+
+			if (line.length > 1) {
+				var previousLine = line[line.length - 2],
+					previousLineTrimmed = previousLine.trim();
+
+				if (previousLineTrimmed.length > 0) {
+					var firstCharacter = previousLineTrimmed[0];
+					if (OCA.Jot.App.settings.listCharacters.indexOf(firstCharacter) !== -1) {
+						var indentation = previousLine.substr(0, previousLine.indexOf(firstCharacter)),
+							indentationAfterMarker = '';
+						if (previousLineTrimmed.length > 1) {
+							var previousLineTrimmedWithoutFirstCharacter = previousLineTrimmed.substr(1),
+								previousLineTrimmedWithoutFirstCharacterTrimmed = previousLineTrimmedWithoutFirstCharacter.trim();
+							if (previousLineTrimmedWithoutFirstCharacterTrimmed.length > 0) {
+								// whitespace between marker and first character
+								indentationAfterMarker = previousLineTrimmedWithoutFirstCharacter.substr(
+									0, previousLineTrimmedWithoutFirstCharacter.indexOf(previousLineTrimmedWithoutFirstCharacterTrimmed[0]));
+							}
+
+						}
+						var selectionPosition = textarea.selectionStart + (indentation + firstCharacter + indentationAfterMarker).length;
+
+						this.value =
+							contentToSelection +
+							indentation +
+							firstCharacter +
+							indentationAfterMarker +
+							textarea.value.substr(this.selectionStart);
+
+						if (textarea.createTextRange) { // Internet Explorer
+							var range = textarea.createTextRange();
+							range.collapse(true);
+							range.moveEnd('character', selectionPosition);
+							range.moveStart('character', selectionPosition);
+							range.select();
+						} else if (textarea.setSelectionRange) { // other browsers
+							textarea.setSelectionRange(selectionPosition, selectionPosition);
+						}
+					}
+				}
+			}
 		},
 
 	}

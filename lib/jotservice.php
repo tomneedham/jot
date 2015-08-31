@@ -36,10 +36,11 @@ class JotService {
         // Get the folder file id
         $id = $this->getJotsFolderID($user);
         $jots = current($this->rootFolder->getUserFolder($user->getUID())->getByID($id));
-        if($jots === '') {
+        if($jots === false) {
             // Delete from database
             $this->config->setUserValue($user->getUID(), $this->appName, 'folderID', '');
-            throw new \Exception('Jots folder not found');
+            // Recreate folder
+            return current($this->rootFolder->getUserFolder($user->getUID())->getByID($this->createJotFolder($user)));
         } else {
             return $jots;
         }

@@ -4,6 +4,7 @@
 \OCP\Util::addScript('jot', 'isotope.pkgd.min');
 \OCP\Util::addScript('jot', 'expanding');
 \OCP\Util::addScript('jot', 'app');
+\OCP\Util::addScript('jot', 'dropzone');
 \OCP\Util::addScript('jot', 'item');
 
 // Include the styles

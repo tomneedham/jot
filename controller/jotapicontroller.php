@@ -13,16 +13,19 @@ class JotApiController extends ApiController {
 
 	protected $user;
 	protected $jotService;
+	protected $imageService;
 
     public function __construct(
 								$appName,
 								IRequest $request,
 								IUser $user,
-								JotService $jotService
+								JotService $jotService,
+								ImageService $imageService
 								) {
         parent::__construct($appName, $request);
 		$this->user = $user;
 		$this->jotService = $jotService;
+		$this->imageService = $imageService;
     }
 
     /**
@@ -85,5 +88,33 @@ class JotApiController extends ApiController {
     public function deleteItem($id) {
 
     }
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function addImage($id) {
+		// Check the jot exists
+		try {
+			$jot = $this->jotService->loadFromID($id);
+			// Save the image
+			$file = $this->request->getUploadedFile('file');
+			return JSONResponse(array($this->imageService->storeImageFromTmp($id, $file)->getId()));
+		} catch (\Exception $e) {
+			die($e->getMessage());
+		}
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * Gets the raw image
+	 * @param integer $jot The jot file id
+	 * @param integer $image The image file id
+	 */
+	 public function getImage($jot, $image) {
+		 $image = $this->imageService->getFromId($image);
+		 // TODO return with the image here
+	 }
 
 }

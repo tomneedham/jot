@@ -126,7 +126,11 @@ class JotService {
      */
      public function loadFromID($id, $user) {
          $file = current($this->getJotsFolder($user)->getByID($id));
-         return $this->loadFromFile($file);
+         if(!$file instanceof File) {
+             throw new \Exception('Cannot find Jot file');
+         } else {
+             return $this->loadFromFile($file);
+         }
      }
 
     /**

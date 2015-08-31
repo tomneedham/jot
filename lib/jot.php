@@ -7,6 +7,7 @@ class Jot {
     protected $content;
     protected $id;
     protected $mTime;
+    protected $images = array();
 
     public function setId($id) {
         $this->id = $id;
@@ -30,6 +31,14 @@ class Jot {
 
     public function getId() {
         return $this->id;
+    }
+
+    public function setImage($id, $url) {
+        $this->images[$id] = $url;
+    }
+
+    public function getImages() {
+        return $this->images;
     }
 
     public function setMTime($mtime) {

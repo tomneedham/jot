@@ -16,6 +16,11 @@
 				<a class="item-state-icon icon-close"></a>
 				<textarea placeholder="Title" rows=1 class="jot-input jot-title"><?php p($jot->getTitle()); ?></textarea>
 				<textarea class="jot-input jot-content" placeholder="..." rows=1 style=""><?php p($jot->getContent()); ?></textarea>
+				<div class="jot-item-images dropzone-previews">
+					<?php foreach($jot->getImages() as $id => $url) { ?>
+						<img width=70 height=70 src="<?php p($url); ?>" alt="<?php p($id); ?>"></img>
+					<?php } ?>
+				</div>
 			</div>
 		</div>
 		<?php } ?>

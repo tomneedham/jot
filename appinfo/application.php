@@ -7,6 +7,7 @@ use OCA\Jot\Controller\PageController;
 use OCA\Jot\Controller\JotApiController;
 use OCA\Jot\Lib\JotService;
 use OCA\Jot\Lib\Jot;
+use OCA\Jot\Lib\ImageService;
 
 class Application extends App {
 
@@ -21,9 +22,9 @@ class Application extends App {
         $container->registerService('PageController', function($c) {
             return new PageController(
                 $c->query('AppName'),
-                $c->query('Request'),
                 $c->query('JotService'),
-                $c->getServer()->getUserSession()->getUser()
+                $c->getServer()->getUserSession()->getUser(),
+                $c->query('ImageService')
             );
         });
         $container->registerService('JotApiController', function($c) {
@@ -47,6 +48,14 @@ class Application extends App {
 
         $container->registerService('Jot', function($c) {
             return new Jot();
+        });
+
+        $container->registerService('ImageService', function($c) {
+            return new ImageService(
+                $c->getServer()->getRootFolder(),
+                $c->query('JotSevice'),
+                $c->getServer()->getConfig()
+            );
         });
 
     }

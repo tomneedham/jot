@@ -111,6 +111,17 @@
 
 			OCA.Jot.App.updateLayout();
 
+			$(this.el).dropzone(
+				{
+					//url: OC.generateUrl('/apps/jot/api/1.0/jots/'+this.getId()+'/images'),
+					url: OC.linkToRemoteBase('webdav')+'/images/test.jpg',
+					method: 'put',
+					clickable: false,
+					maxFilesize: 20,
+					previewsContainer: '.jot-item-images'
+				}
+			);
+
 		},
 
 		save: function() {

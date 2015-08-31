@@ -33,21 +33,15 @@
 				layoutMode: 'masonry'
 			});
 
-			// Load dummy or real?
-			if($('.jot-items').data('count') == 0) {
-				// Load a dummy item
-				this.addItem();
-			} else {
-				// Load real deal
-				// Find all the .jot-item's and initialise them all
-				$('.jot-item').each(function() {
-					var item = new OCA.Jot.Item($(this));
-					OCA.Jot.App.items.push(item);
-					// Since they are already there, trigger the postInsert method
-					item.postInsert();
-					item.new = false;
-				});
-			}
+
+			// Find all the .jot-item's and initialise them all
+			$('.jot-item').each(function() {
+				var item = new OCA.Jot.Item($(this));
+				OCA.Jot.App.items.push(item);
+				// Since they are already there, trigger the postInsert method
+				item.postInsert();
+				item.new = false;
+			});
 
 			this.appBinds();
 		},
@@ -57,7 +51,7 @@
 		 */
 		appBinds: function() {
 			// Add item bind
-			$('a.add-jot-item').on('click', function(e){ OCA.Jot.App.addItem(); });
+			$('div.add-jot-item').on('click', function(e){ OCA.Jot.App.addItem(); });
 		},
 
 		/**

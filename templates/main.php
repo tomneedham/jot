@@ -16,9 +16,6 @@
 <div id="app">
 
 	<div id="app-content">
-		<div id="controls">
-			<a class="button add-jot-item">Add Jot</a>
-		</div>
 
 		<?php print_unescaped($this->inc("part.cards")); ?>
 

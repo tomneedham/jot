@@ -109,9 +109,18 @@ class JotService {
     public function loadFromFile(File $file) {
         $jot = new Jot();
         $jot->setID($file->getId());
-        $jot->setTitle(current(explode('.', $file->getName(), 2)));
+        $jot->setTitle(current(explode('\n', $file->getContent(),2)));
         $jot->setContent($file->getContent());
         return $jot;
+    }
+
+    /**
+     * Converts the first line of text to a save filename string
+     * @param string
+     * @return string
+     */
+    public function createSafeFilename($in) {
+        return $in;
     }
 
     /**
@@ -121,7 +130,7 @@ class JotService {
      */
     public function createJot(Jot $jot, IUser $user) {
         $jots = $this->getJotsFolder($user);
-        $name = $jots->getNonExistingName($jot->getTitle());
+        $name = $jots->getNonExistingName($this->createSafeFilename($jot->getTitle()));
         $jotFile = $jots->newFile($name.'.txt');
         $jotFile->putContent($jot->getContent());
         return $jotFile->getId();

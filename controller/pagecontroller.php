@@ -3,18 +3,21 @@ namespace OCA\Jot\Controller;
 
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\TemplateResponse;
+use OCP\IUser;
+use OCA\Jot\Lib\JotService;
+
 
 
 class PageController extends Controller {
 
-	private $itemMapper;
-	private $userid;
+	private $jotService;
+	private $user;
 	protected $appName;
 
-	public function __construct($appName, $request, ItemMapper $itemMapper, $userid) {
+	public function __construct($appName, $request, JotService $jotService, IUser $user) {
 		$this->appName = $appName;
-		$this->itemMapper = $itemMapper;
-		$this->userid = $userid;
+		$this->jotService = $jotService;
+		$this->user = $user;
 	}
 
 	/**
@@ -22,14 +25,17 @@ class PageController extends Controller {
 	 * @NoCSRFRequired
 	 */
     public function index() {
-    	$templateName = 'main';
-    	$items = $this->itemMapper->fetchView($this->userid, null, 20);
-    	$items = is_null($items) ? array() : $items;
+    	try {
+			$jots = $this->jotService->getUserJots($this->user);
+		} catch (\Exception $e) {
+			// Didn't work
+		die($e->getMessage());
+		}
         $parameters = array(
-        	'items' => $items,
+        	'jots' => $jots,
         	'appversion' => \OCP\App::getAppVersion('jot')
         );
-        return new TemplateResponse($this->appName, $templateName, $parameters);
+        return new TemplateResponse($this->appName, 'main', $parameters);
     }
 
 }

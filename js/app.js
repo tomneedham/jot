@@ -30,24 +30,25 @@
 			this.container = $('div.jot-items');
 			this.container.isotope({
 				itemSelector: '.jot-item',
-				layoutMode: 'masonry'
+				layoutMode: 'masonry',
+				getSortData: {
+					mtime: function(item) {
+						return $(item).data('mtime');
+					}
+				},
+				sortBy: 'mtime',
+				sortAscending: false
 			});
 
-			// Load dummy or real?
-			if($('.jot-items').data('count') == 0) {
-				// Load a dummy item
-				this.addItem();
-			} else {
-				// Load real deal
-				// Find all the .jot-item's and initialise them all
-				$('.jot-item').each(function() {
-					var item = new OCA.Jot.Item($(this));
-					OCA.Jot.App.items.push(item);
-					// Since they are already there, trigger the postInsert method
-					item.postInsert();
-					item.new = false;
-				});
-			}
+
+			// Find all the .jot-item's and initialise them all
+			$('.jot-item').each(function() {
+				var item = new OCA.Jot.Item($(this));
+				OCA.Jot.App.items.push(item);
+				// Since they are already there, trigger the postInsert method
+				item.postInsert();
+				item.new = false;
+			});
 
 			this.appBinds();
 		},
@@ -57,7 +58,7 @@
 		 */
 		appBinds: function() {
 			// Add item bind
-			$('a.add-jot-item').on('click', function(e){ OCA.Jot.App.addItem(); });
+			$('div.add-jot-item').on('click', function(e){ OCA.Jot.App.addItem(); });
 		},
 
 		/**
@@ -81,9 +82,11 @@
 			var item = document.createElement('div');
 			item.innerHTML = '<div class="jot-item-content" style="padding-bottom: 5px;"><a class="item-state-icon icon-close"></a><textarea placeholder="Title" rows=1 autofocus class="jot-input jot-title">'+title+'</textarea><textarea class="jot-input jot-content" placeholder="An interesting note..." rows=1 style="">'+content+'</textarea></div>';
 			item.className = 'jot-item';
+			item.setAttribute('data-mtime', Math.floor(new Date().getTime()/1000));
 			var i = new OCA.Jot.Item(item);
 			this.prependItem(i);
 			$(i.el).find('textarea.jot-title').focus();
+			this.container.isotope('updateSortData').isotope();
 		},
 
 		/**

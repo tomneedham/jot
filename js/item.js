@@ -76,11 +76,11 @@
 			$(this.el).hover(
 				function() {
 					if(!this.saving){
-						$(_self.el).find('.icon-close').show();
+						$(_self.el).find('.item-state-icon').show();
 					}
 				},
 				function() {
-					$(_self.el).find('.icon-close').hide();
+					$(_self.el).find('.item-state-icon').hide();
 				}
 			);
 
@@ -117,43 +117,57 @@
 			this.saved = true;
 			if(this.new) {
 				// First save, create item, return id
-				$.post(
-					OC.generateUrl('/apps/jot/api/1.0/items/'),
-					{ title: this.getTitle(), content: this.getContent() },
-					function(data) {
-						if(data.success) {
-							_self.setIcon('done');
-							setTimeout(function(){ _self.setIcon('delete') }, 1000);
-							_self.setId(data.id);
-							_self.new = false
-						} else {
-							// Failed to create the note and save the data
-							_self.setIcon('failed');
-							_self.saved = false;
-						}
-						_self.saving = false;
-					},
-					"json"
-				);
+				var request = $.ajax({
+					type: "POST",
+					url: OC.generateUrl('/apps/jot/api/1.0/jots/'),
+					data: { title: this.getTitle(), content: this.getContent() },
+					dataType: "json"
+				});
+
+				request.success(function(data) {
+					_self.setIcon('done');
+					setTimeout(function(){ _self.setIcon('delete') }, 1000);
+					_self.setId(data.id);
+					_self.new = false
+				});
+
+				request.fail(function(jqXHR) {
+					_self.setIcon('failed');
+					_self.saved = false;
+				});
+
+				request.done(function() {
+					_self.saving = false;
+				});
+
 			} else {
 				// Normal update
-				$.ajax({
-					url: OC.generateUrl('/apps/jot/api/1.0/items/'+$(this.el).attr('data-id')), // WTF why wont this.getId() work here...
+				var request = $.ajax({
+					url: OC.generateUrl('/apps/jot/api/1.0/jots/'+$(this.el).attr('data-id')), // WTF why wont this.getId() work here...
 					data: { title: this.getTitle(), content: this.getContent() },
-					success: function(data) {
-						if(data.success) {
-							// Yay
-							_self.setIcon('done');
-							setTimeout(function(){ _self.setIcon('delete') }, 1000);
-						} else {
-							_self.saved = false;
-							_self.setIcon('failed');
-							setTimeout(function(){ _self.setIcon('delete') }, 1000);
-						}
-						_self.saving = false;
-					},
 					dataType: "json",
 					method: 'PUT',
+				});
+
+				request.success(function(data) {
+					// Yay
+					_self.setIcon('done');
+					setTimeout(function(){ _self.setIcon('delete') }, 1000);
+					// Update the values
+					$(_self.el).find('.jot-title').val(data.title);
+					$(_self.el).find('.jot-content').val(data.content);
+					$(_self.el).attr('data-mtime', data.mtime);
+					OCA.Jot.App.container.isotope('updateSortData').isotope(); //TODO broken Can result in some movement of the item after auto saving
+				});
+
+				request.fail(function(jqXHR) {
+					_self.saved = false;
+					_self.setIcon('failed');
+					setTimeout(function(){ _self.setIcon('delete') }, 1000);
+				});
+
+				request.done(function() {
+					_self.saving = false;
 				});
 			}
 		},

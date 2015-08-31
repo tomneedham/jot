@@ -110,8 +110,9 @@ class JotService {
     public function loadFromFile(File $file) {
         $jot = new Jot();
         $jot->setID($file->getId());
-        $jot->setTitle(current(explode('\n', $file->getContent(),2)));
-        $jot->setContent($file->getContent());
+        $data = explode("\n", $file->getContent(),2);
+        $jot->setTitle($data[0]);
+        $jot->setContent($data[1]);
         return $jot;
     }
 

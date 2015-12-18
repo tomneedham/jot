@@ -2,11 +2,12 @@
 
 namespace OCA\Jot\Lib;
 
-use OCP\IRootFolder;
+use OCP\Files\IRootFolder;
 use OCA\Jot\Lib\JotService;
 use OCA\Jot\Lib\Jot;
 use OCA\Jot\Lib\Image;
 use OCP\IConfig;
+use OCP\IUser;
 
 class ImageService {
 

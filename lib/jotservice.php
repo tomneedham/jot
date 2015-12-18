@@ -3,10 +3,11 @@
 namespace OCA\Jot\Lib;
 
 use OCP\Files\IRootFolder;
-use OCP\IUser;
+use OCP\IUserSession;
 use OCP\IConfig;
 use OCA\Jot\Lib\Jot;
 use OCP\Files\File;
+use OCP\User\User;
 
 class JotService {
 
@@ -21,19 +22,19 @@ class JotService {
                             IRootFolder $rootFolder,
                             Jot $jot,
                             IConfig $config,
-                            IUser $user
+                            IUserSession $userSession
                             ) {
         $this->jot = $jot;
         $this->rootFolder = $rootFolder;
         $this->config = $config;
-        $this->user = $user;
+        $this->user = $userSession->getUser();
         $this->appName = $appName;
     }
 
     /**
      * Retrives the folder for jots for a given user
      */
-    public function getJotsFolder(IUser $user) {
+    public function getJotsFolder(User $user) {
         // Get the folder file id
         $id = $this->getJotsFolderID($user);
         $jots = current($this->rootFolder->getUserFolder($user->getUID())->getByID($id));
@@ -51,7 +52,7 @@ class JotService {
      * Returns the file ID for the jots folder
      * @return is_integer
      */
-    public function getJotsFolderID(IUser $user) {
+    public function getJotsFolderID(User $user) {
         $id = $this->config->getUserValue($user->getUID(), 'jot', 'folderID');
         if($id === '') {
             // We need to try creating the folder for the first time
@@ -66,7 +67,7 @@ class JotService {
      * Creates a jot folder in the users filesystem
      * @return integer The file ID
      */
-     public function createJotFolder(IUser $user) {
+     public function createJotFolder(User $user) {
          $files = $this->rootFolder->getUserFolder($user->getUID());
          $name = $files->getNonExistingName('Jots');
          return $files->newFolder($name)->getId();
@@ -76,7 +77,7 @@ class JotService {
       * Retrieves Jot objects for the given user
       * @return array of Jot objects
       */
-    public function getUserJots(IUser $user) {
+    public function getUserJots(User $user) {
         // Find their jots folder
         $jotsFolder = $this->getJotsFolder($user);
         // Get all text files
@@ -124,7 +125,7 @@ class JotService {
      * @param IUser $user
      * @return Jot
      */
-     public function loadFromID($id, $user) {
+     public function loadFromID($id, User $user) {
          $file = current($this->getJotsFolder($user)->getByID($id));
          if(!$file instanceof File) {
              throw new \Exception('Cannot find Jot file');

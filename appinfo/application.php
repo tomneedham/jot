@@ -23,7 +23,7 @@ class Application extends App {
             return new PageController(
                 $c->query('AppName'),
                 $c->query('JotService'),
-                $c->getServer()->getUserSession()->getUser(),
+                $c->query('ServerContainer')->getUserSession(),
                 $c->query('ImageService')
             );
         });
@@ -31,7 +31,7 @@ class Application extends App {
             return new JotApiController(
                 $c->query('AppName'),
                 $c->query('Request'),
-                $c->getServer()->getUserSession()->getUser(),
+                $c->query('ServerContainer')->getUserSession()->getUser(),
                 $c->query('JotService')
             );
         });
@@ -39,10 +39,10 @@ class Application extends App {
         $container->registerService('JotService', function($c) {
             return new JotService(
                 $c->query('AppName'),
-                $c->getServer()->getRootFolder(),
+                $c->query('ServerContainer')->getRootFolder(),
                 $c->query('Jot'),
-                $c->getServer()->getConfig(),
-                $c->getServer()->getUserSession()->getUser()
+                $c->query('ServerContainer')->getConfig(),
+                $c->query('ServerContainer')->getUserSession()
             );
         });
 
@@ -52,9 +52,9 @@ class Application extends App {
 
         $container->registerService('ImageService', function($c) {
             return new ImageService(
-                $c->getServer()->getRootFolder(),
+                $c->query('ServerContainer')->getRootFolder(),
                 $c->query('JotSevice'),
-                $c->getServer()->getConfig()
+                $c->query('ServerContainer')->getConfig()
             );
         });
 

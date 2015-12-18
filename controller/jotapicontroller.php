@@ -6,7 +6,7 @@ use OCP\IRequest;
 use OCP\AppFramework\Http\JSONResponse;
 use OCA\Jot\Lib\JotService;
 use OCA\Jot\Lib\Jot;
-use OCP\IUser;
+use OCP\IUserManager;
 
 
 class JotApiController extends ApiController {
@@ -18,7 +18,7 @@ class JotApiController extends ApiController {
     public function __construct(
 								$appName,
 								IRequest $request,
-								IUser $user,
+								User $user,
 								JotService $jotService,
 								ImageService $imageService
 								) {

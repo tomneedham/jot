@@ -3,9 +3,9 @@ namespace OCA\Jot\Controller;
 
 use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\TemplateResponse;
-use \OCP\IUser;
 use \OCA\Jot\Lib\JotService;
 use \OCA\Jot\Lib\ImageService;
+use \OCP\IUserSession;
 
 class PageController extends Controller {
 
@@ -14,10 +14,10 @@ class PageController extends Controller {
 	protected $appName;
 	protected $imageService;
 
-	public function __construct($appName, JotService $jotService, IUser $user, ImageService $imageService) {
+	public function __construct($appName, JotService $jotService, IUserSession $userSession, ImageService $imageService) {
 		$this->appName = $appName;
 		$this->jotService = $jotService;
-		$this->user = $user;
+		$this->user = $userSession->getUser();
 		$this->imageService = $imageService;
 	}
 
@@ -36,7 +36,7 @@ class PageController extends Controller {
 			}
 		} catch (\Exception $e) {
 			// Didn't work
-		die($e->getMessage());
+			die($e->getMessage());
 		}
         $parameters = array(
         	'jots' => $jots,

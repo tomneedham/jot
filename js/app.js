@@ -46,7 +46,7 @@
 
 
 			// Find all the .jot-item's and initialise them all
-			$('.jot-item').each(function() {
+			$('.jot-item').not('.add-jot-item').each(function() {
 				var item = new OCA.Jot.Item($(this));
 				OCA.Jot.App.items.push(item);
 				// Since they are already there, trigger the postInsert method

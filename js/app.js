@@ -130,6 +130,60 @@
 			this.container.isotope('layout');
 		},
 
+		/**
+		 * Handles clicking of the import button
+		 */
+		_onClickImport: function() {
+			// First show a dialog explaining the dealio
+			OC.dialogs.info(
+				test,
+				title,
+				function() {
+					OC.dialogs.filepicker(
+	                    t('jot', 'Choose your exported zip file:'),
+	                    OCA.Jot.App.importFromZip,
+	                    false,
+	                    'application/zip'
+		            );
+				},
+				false
+			);
+
+		},
+
+		/**
+		 * Handle triggering the import from a given path
+		 */
+		importFromZip: function(path) {
+			// Call ajax
+			var es = new OC.Eventsource(OC.generateUrl('/apps/jot/api/1.0/import', {path: path}));
+			// Fire a info dialog and keep the user updated with the progress
+			OC.dialogs.info(
+				test,
+				t('Jot', 'Import progress'),
+				function() {
+					// Callback for what?
+				},
+				false
+			);
+
+			es.listen('progress', function(message) {
+				console.log(message);
+				// Some progress occured
+			});
+
+			es.listen('error', function(message) {
+				console.log(message);
+				// Failed
+			});
+
+			es.listen('complete', function(message) {
+				// Finished!
+			});
+
+			// Refresh the page to load the new shiny content
+		}
+
 	}
 
 	OCA.Jot.App = App;

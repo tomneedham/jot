@@ -7,6 +7,7 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCA\Jot\Lib\JotService;
 use OCA\Jot\Lib\Jot;
 use OCA\Jot\Lib\ImageService;
+use OCP\IEventSource;
 
 class JotApiController extends ApiController {
 
@@ -17,7 +18,7 @@ class JotApiController extends ApiController {
 								IRequest $request,
 								$UserId,
 								JotService $jotService,
-								ImageService $imageService
+								ImageService $imageService,
 								) {
         parent::__construct($appName, $request);
 		$this->user = $UserId;
@@ -119,6 +120,37 @@ class JotApiController extends ApiController {
 	 public function getImage($jot, $image) {
 		 $image = $this->imageService->getFromId($image);
 		 // TODO return with the image here
+	 }
+
+	 /**
+	  * @NoAdminRequired
+	  * @NoCSRFRequired
+	  * Starts the import process given a path to a zip file of notes
+	  */
+	 public function getImport($path, \OCP\IEventSource $eventSource) {
+		 // Trigger the eventSource connection_status
+		 $eventSource->send('progress', 'Preparing to import');
+		 // Checkout the path, check it exists
+
+		 // Check it is a zip file
+
+		 // Check we have correct permissions
+
+		 // Unzip the file
+
+		 // Iterate through the files
+
+		 	// Open file
+
+			// Parse contents
+
+			// Create a new Jot
+
+			// Copy and associated images
+
+		// Close the connection
+		$eventSource->send('compelte', '');
+		$eventSoruce->close();
 	 }
 
 }

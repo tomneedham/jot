@@ -15,6 +15,7 @@
 
 <div id="app">
 	<div id="app-content">
+		<button class="jot-import">Import from Google Keep</button>
 		<?php print_unescaped($this->inc("part.cards")); ?>
 	</div>
 </div>

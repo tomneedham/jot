@@ -62,6 +62,7 @@ class ImageService {
         $imageFolder = $this->getImageFolder($user);
         $files = $imageFolder->getDirectoryListing();
         $return = array();
+        $out = [];
         foreach($files as $file) {
             if(strpos($jot->getId(), $file->getName()) != 0) {
                 $out[] = $file;

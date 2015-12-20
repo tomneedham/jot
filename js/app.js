@@ -63,6 +63,7 @@
 		appBinds: function() {
 			// Add item bind
 			$('div.add-jot-item').on('click', function(e){ OCA.Jot.App.addItem(); });
+			$('button.jot-import').on('click', this._onClickImport);
 		},
 
 		/**
@@ -136,15 +137,32 @@
 		_onClickImport: function() {
 			// First show a dialog explaining the dealio
 			OC.dialogs.info(
-				test,
-				title,
+				'This wizard helps you import notes from Google Keep. First, you need to visit Google Takeout to export your data. Click \'OK\' to visit the website. Once there, generate a .zip file containing only your Google Keep data, then upload this to your ownCloud.',
+				'Import Wizard',
 				function() {
-					OC.dialogs.filepicker(
-	                    t('jot', 'Choose your exported zip file:'),
-	                    OCA.Jot.App.importFromZip,
-	                    false,
-	                    'application/zip'
-		            );
+					// Take then to google takeout
+					window.open('https://takeout.google.com/settings/takeout?pli=1');
+					OC.dialogs.info(
+						'Next, upload this archive folder to your ownCloud in a new window and then return to this page. Click \'OK\' to open a new ownCloud window.',
+						'Import Wizard',
+						function() {
+							window.open(OC.generateUrl('/apps/files'));
+							OC.dialogs.info(
+								'Click \'OK\' and select the archive file you uploaded.',
+								'Import Wizard',
+								function() {
+									OC.dialogs.filepicker(
+										t('jot', 'Choose your exported zip file:'),
+										OCA.Jot.App.importFromZip,
+										false,
+										'application/zip'
+									);
+								},
+								false
+							);
+						},
+						false
+					);
 				},
 				false
 			);
@@ -156,20 +174,24 @@
 		 */
 		importFromZip: function(path) {
 			// Call ajax
-			var es = new OC.Eventsource(OC.generateUrl('/apps/jot/api/1.0/import', {path: path}));
+			var es = new OC.EventSource(OC.generateUrl('/apps/jot/api/1.0/jots/import'), {path: path});
 			// Fire a info dialog and keep the user updated with the progress
 			OC.dialogs.info(
-				test,
-				t('Jot', 'Import progress'),
+				'Please wait while the import is processed. Updates will appear here.',
+				'Importing',
 				function() {
-					// Callback for what?
+					// Callback for what?, when you hit ok at the end, refresh the page
 				},
 				false
 			);
 
+			$('#oc-dialog-1-content p').html($('#oc-dialog-1-content p').html()+'</br></br>');
+
+
 			es.listen('progress', function(message) {
 				console.log(message);
 				// Some progress occured
+				$('#oc-dialog-1-content p').html($('#oc-dialog-1-content p').html()+'</br>'+message);
 			});
 
 			es.listen('error', function(message) {

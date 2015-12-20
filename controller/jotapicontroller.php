@@ -7,11 +7,12 @@ use OCP\AppFramework\Http\JSONResponse;
 use OCA\Jot\Lib\JotService;
 use OCA\Jot\Lib\Jot;
 use OCA\Jot\Lib\ImageService;
+use OCA\jot\Lib\Importer;
 use OCP\IEventSource;
 
 class JotApiController extends ApiController {
 
-	protected $user, $jotService, $imageService;
+	protected $user, $jotService, $imageService, $importer, $eventSource;
 
     public function __construct(
 								$appName,
@@ -19,11 +20,15 @@ class JotApiController extends ApiController {
 								$UserId,
 								JotService $jotService,
 								ImageService $imageService,
+								Importer $importer,
+								IEventSource $eventSource
 								) {
         parent::__construct($appName, $request);
 		$this->user = $UserId;
 		$this->jotService = $jotService;
 		$this->imageService = $imageService;
+		$this->importer = $importer;
+		$this->eventSource = $eventSource;
     }
 
     /**
@@ -93,21 +98,21 @@ class JotApiController extends ApiController {
     }
 
 	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
+	* @NoAdminRequired
+	* @NoCSRFRequired
+	*/
 	public function addImage($id) {
-		// Check the jot exists
-		try {
-			$jot = $this->jotService->loadFromID($id);
-			// Save the image
-			$file = $this->request->getUploadedFile('file');
-			return JSONResponse(
-				[$this->imageService->storeImageFromTmp($id, $file)->getId()]
-			);
-		} catch (\Exception $e) {
-			die($e->getMessage());
-		}
+	// Check the jot exists
+	try {
+		$jot = $this->jotService->loadFromID($id);
+		// Save the image
+		$file = $this->request->getUploadedFile('file');
+		return JSONResponse(
+			[$this->imageService->storeImageFromTmp($id, $file)->getId()]
+		);
+	} catch (\Exception $e) {
+		die($e->getMessage());
+	}
 	}
 
 	/**
@@ -122,35 +127,21 @@ class JotApiController extends ApiController {
 		 // TODO return with the image here
 	 }
 
-	 /**
-	  * @NoAdminRequired
-	  * @NoCSRFRequired
-	  * Starts the import process given a path to a zip file of notes
-	  */
-	 public function getImport($path, \OCP\IEventSource $eventSource) {
-		 // Trigger the eventSource connection_status
-		 $eventSource->send('progress', 'Preparing to import');
-		 // Checkout the path, check it exists
+	/**
+	* @NoAdminRequired
+	* @NoCSRFRequired
+	* Starts the import process given a path to a zip file of notes
+	*/
+	public function getImport($path) {
 
-		 // Check it is a zip file
+		// Trigger the eventSource connection_status
+		$this->eventSource->send('progress', 'Preparing to import...');
 
-		 // Check we have correct permissions
-
-		 // Unzip the file
-
-		 // Iterate through the files
-
-		 	// Open file
-
-			// Parse contents
-
-			// Create a new Jot
-
-			// Copy and associated images
+		$this->importer->import($path, $this->eventSource);
 
 		// Close the connection
-		$eventSource->send('compelte', '');
-		$eventSoruce->close();
+		$this->eventSource->send('complete', '');
+		$this->eventSource->close();
 	 }
 
 }

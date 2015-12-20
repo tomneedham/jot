@@ -6,24 +6,21 @@ use OCP\IRequest;
 use OCP\AppFramework\Http\JSONResponse;
 use OCA\Jot\Lib\JotService;
 use OCA\Jot\Lib\Jot;
-use OCP\IUserManager;
-
+use OCA\Jot\Lib\ImageService;
 
 class JotApiController extends ApiController {
 
-	protected $user;
-	protected $jotService;
-	protected $imageService;
+	protected $user, $jotService, $imageService;
 
     public function __construct(
 								$appName,
 								IRequest $request,
-								User $user,
+								$UserId,
 								JotService $jotService,
 								ImageService $imageService
 								) {
         parent::__construct($appName, $request);
-		$this->user = $user;
+		$this->user = $UserId;
 		$this->jotService = $jotService;
 		$this->imageService = $imageService;
     }
@@ -86,7 +83,12 @@ class JotApiController extends ApiController {
      * @NoCSRFRequired
      */
     public function deleteItem($id) {
-
+		try {
+			$jot = $this->jotService->deleteJot($this->jotService->loadFromID($id));
+			return JSONResponse();
+		} catch (\Exception $e) {
+			die($e->getMessage());
+		}
     }
 
 	/**
@@ -99,7 +101,9 @@ class JotApiController extends ApiController {
 			$jot = $this->jotService->loadFromID($id);
 			// Save the image
 			$file = $this->request->getUploadedFile('file');
-			return JSONResponse(array($this->imageService->storeImageFromTmp($id, $file)->getId()));
+			return JSONResponse(
+				[$this->imageService->storeImageFromTmp($id, $file)->getId()]
+			);
 		} catch (\Exception $e) {
 			die($e->getMessage());
 		}

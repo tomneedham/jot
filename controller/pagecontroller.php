@@ -5,19 +5,22 @@ use \OCP\AppFramework\Controller;
 use \OCP\AppFramework\Http\TemplateResponse;
 use \OCA\Jot\Lib\JotService;
 use \OCA\Jot\Lib\ImageService;
-use \OCP\IUserSession;
+use \OCP\IUser;
 
 class PageController extends Controller {
 
-	private $jotService;
-	private $user;
-	protected $appName;
-	protected $imageService;
+	private $jotService, $user;
+	protected $appName, $imageService;
 
-	public function __construct($appName, JotService $jotService, IUserSession $userSession, ImageService $imageService) {
+	public function __construct(
+								$appName,
+								JotService $jotService,
+								$UserId,
+								ImageService $imageService
+								) {
 		$this->appName = $appName;
 		$this->jotService = $jotService;
-		$this->user = $userSession->getUser();
+		$this->user = $UserId;
 		$this->imageService = $imageService;
 	}
 

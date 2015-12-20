@@ -80,3 +80,7 @@ textarea.jot-input {
 .jot-item-content .icon-close:hover {
 	opacity: 0.7;
 }
+
+div.dz-preview > .dz-details,.dz-progress,.dz-success-mark,.dz-error-message,.dz-error-mark {
+	display: none;
+}

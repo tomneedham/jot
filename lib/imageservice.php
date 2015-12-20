@@ -7,31 +7,34 @@ use OCA\Jot\Lib\JotService;
 use OCA\Jot\Lib\Jot;
 use OCA\Jot\Lib\Image;
 use OCP\IConfig;
-use OCP\IUser;
 
 class ImageService {
 
-    public function __construct(IRootFolder $rootFolder, JotService $jotService, IConfig $appConfig) {
+    protected $appName, $rootFolder, $jotService, $appConfig;
+
+    public function __construct($appName, IRootFolder $rootFolder, JotService $jotService, IConfig $appConfig) {
         $this->rootFolder = $rootFolder;
         $this->jotService = $jotService;
         $this->appConfig = $appConfig;
+        $this->appName = $appName;
     }
 
-    public function getImageFolder(IUser $user) {
+    public function getImageFolder($user) {
         $id = $this->getImageFolderID($user);
-        $imageFolder = current($this->rootFolder->getUserFolder($user->getUID())->getById($id));
+        $imageFolder = current($this->rootFolder->getUserFolder($user)->getById($id));
         if($imageFolder === false) {
             // Doesnt exist, or not there
             $jotsFolder = $this->jotService->getJotsFolder($user);
             $name = $jotsFolder->getNonExistingName('images');
-            $imagesFolder = $jotsFolder->newFolder($name);
+            $imageFolder = $jotsFolder->newFolder($name);
             // Set in db
-            $this->appConfig->setUserValue($user->getUID(), $this->appName, 'imageID', $imagesFolder->getId());
+            $this->appConfig->setUserValue($user, $this->appName, 'imageID', $imageFolder->getId());
         }
+        return $imageFolder;
     }
 
-    public function getImageFolderID(IUser $user) {
-        return $this->appConfig->getUserValue($user->getUID(), $this->appName, 'imageID');
+    public function getImageFolderID($user) {
+        return $this->appConfig->getUserValue($user, $this->appName, 'imageID');
     }
 
     /**
@@ -41,7 +44,7 @@ class ImageService {
      * @param IUser @user
      * @return Image
      */
-    public function storeImageFromTmp(Jot $jot, $file, IUser $user) {
+    public function storeImageFromTmp(Jot $jot, $file, $user) {
         $imagesFolder = $this->getImageFolder($user);
         $name = $imagesFolder->getNonExistingName($jot->getId().'.jpg');
         $file = $imagesFolder->newFile($name);
@@ -55,7 +58,7 @@ class ImageService {
      * @param IUser $user
      * @return File{]
      */
-    public function getImagesForJot(Jot $jot, IUser $user) {
+    public function getImagesForJot(Jot $jot, $user) {
         $imageFolder = $this->getImageFolder($user);
         $files = $imageFolder->getDirectoryListing();
         $return = array();
@@ -70,4 +73,3 @@ class ImageService {
 
 
 }
- ?>

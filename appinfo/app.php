@@ -1,7 +1,6 @@
 <?php
 
 \OCP\App::addNavigationEntry(array(
-
     'id' => 'jot',
     'order' => 100,
     'href' => \OCP\Util::linkToRoute('jot.page.index'),

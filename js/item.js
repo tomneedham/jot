@@ -118,7 +118,13 @@
 					method: 'put',
 					clickable: false,
 					maxFilesize: 20,
-					previewsContainer: '.jot-item-images'
+					previewsContainer: '.jot-item-images',
+					init: function() {
+						var dropzone = this;
+						dropzone.on('complete', function() {
+							OCA.Jot.App.updateLayout();
+						});
+					}
 				}
 			);
 
@@ -224,10 +230,9 @@
 		archive: function() {
 			if(!this.new) {
 				$.ajax({
-					url: OC.generateUrl('/apps/jot/api/1.0/items/')+$(this.el).attr('data-id'), // WTF why won't this.getId() work here.....
-					data: { archived: true },
+					url: OC.generateUrl('/apps/jot/api/1.0/jots/')+$(this.el).attr('data-id'), // WTF why won't this.getId() work here.....
 					dataType: "json",
-					method: 'PUT',
+					method: 'DELETE',
 				});
 			}
 			OCA.Jot.App.removeItemFromView(this);

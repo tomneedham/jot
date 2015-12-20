@@ -3,11 +3,7 @@ namespace OCA\Jot\Lib;
 
 class Jot {
 
-    protected $title;
-    protected $content;
-    protected $id;
-    protected $mTime;
-    protected $images = array();
+    protected $title, $content, $id, $mTime, $images = array();
 
     public function setId($id) {
         $this->id = $id;
@@ -59,5 +55,3 @@ class Jot {
     }
 
 }
-
-?>

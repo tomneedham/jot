@@ -3,46 +3,40 @@
 namespace OCA\Jot\Lib;
 
 use OCP\Files\IRootFolder;
-use OCP\IUserSession;
 use OCP\IConfig;
 use OCA\Jot\Lib\Jot;
 use OCP\Files\File;
-use OCP\User\User;
 
 class JotService {
 
-    protected $rootFolder;
-    protected $jot;
-    protected $config;
-    protected $user;
-    protected $appName;
+    protected $rootFolder, $jot, $config, $user, $appName;
 
     public function __construct(
-                            $appName,
-                            IRootFolder $rootFolder,
-                            Jot $jot,
-                            IConfig $config,
-                            IUserSession $userSession
+                                $appName,
+                                IRootFolder $rootFolder,
+                                Jot $jot,
+                                IConfig $config,
+                                $UserId
                             ) {
         $this->jot = $jot;
         $this->rootFolder = $rootFolder;
         $this->config = $config;
-        $this->user = $userSession->getUser();
+        $this->user = $UserId;
         $this->appName = $appName;
     }
 
     /**
      * Retrives the folder for jots for a given user
      */
-    public function getJotsFolder(User $user) {
+    public function getJotsFolder($user) {
         // Get the folder file id
         $id = $this->getJotsFolderID($user);
-        $jots = current($this->rootFolder->getUserFolder($user->getUID())->getByID($id));
+        $jots = current($this->rootFolder->getUserFolder($user)->getByID($id));
         if($jots === false) {
             // Delete from database
-            $this->config->setUserValue($user->getUID(), $this->appName, 'folderID', '');
+            $this->config->setUserValue($user, $this->appName, 'folderID', '');
             // Recreate folder
-            return current($this->rootFolder->getUserFolder($user->getUID())->getByID($this->createJotFolder($user)));
+            return current($this->rootFolder->getUserFolder($user)->getByID($this->createJotFolder($user)));
         } else {
             return $jots;
         }
@@ -52,13 +46,13 @@ class JotService {
      * Returns the file ID for the jots folder
      * @return is_integer
      */
-    public function getJotsFolderID(User $user) {
-        $id = $this->config->getUserValue($user->getUID(), 'jot', 'folderID');
+    public function getJotsFolderID($user) {
+        $id = $this->config->getUserValue($user, 'jot', 'folderID');
         if($id === '') {
             // We need to try creating the folder for the first time
             $id = $this->createJotFolder($user);
             // Save the folder id
-            $this->config->setUserValue($user->getUID(), $this->appName, 'folderID', $id);
+            $this->config->setUserValue($user, $this->appName, 'folderID', $id);
         }
         return $id;
     }
@@ -67,8 +61,8 @@ class JotService {
      * Creates a jot folder in the users filesystem
      * @return integer The file ID
      */
-     public function createJotFolder(User $user) {
-         $files = $this->rootFolder->getUserFolder($user->getUID());
+     public function createJotFolder($user) {
+         $files = $this->rootFolder->getUserFolder($user);
          $name = $files->getNonExistingName('Jots');
          return $files->newFolder($name)->getId();
      }
@@ -77,7 +71,7 @@ class JotService {
       * Retrieves Jot objects for the given user
       * @return array of Jot objects
       */
-    public function getUserJots(User $user) {
+    public function getUserJots($user) {
         // Find their jots folder
         $jotsFolder = $this->getJotsFolder($user);
         // Get all text files
@@ -125,7 +119,7 @@ class JotService {
      * @param IUser $user
      * @return Jot
      */
-     public function loadFromID($id, User $user) {
+     public function loadFromID($id, $user) {
          $file = current($this->getJotsFolder($user)->getByID($id));
          if(!$file instanceof File) {
              throw new \Exception('Cannot find Jot file');
@@ -163,6 +157,19 @@ class JotService {
         return $jot;
     }
 
-}
+    /**
+     * Delete a given jot
+     */
+    public function deleteJot(Jot $jot) {
+        $jotsFolder = $this->getJotsFolder($this->user);
+        $jotFile = current($jotsFolder->getById($jot->getId()));
+        if(!is_null($jotFile)) {
+            // Delete it
+            $jotFile->delete();
+        } else {
+            // Doesnt exist
+            throw \Exception('Jot does not exist');
+        }
+    }
 
-?>
+}

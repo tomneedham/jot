@@ -3,9 +3,10 @@
     <id>jot</id>
     <name>Jot</name>
     <description>An alternative ownCloud notes application</description>
-    <version>0.5</version>
+    <version>0.6</version>
     <licence>AGPL</licence>
     <author>Tom Needham</author>
     <requiremin>7</requiremin>
     <website>https://github.com/tomneedham/jot</website>
+    <namespace>Jot</namespace>
 </info>

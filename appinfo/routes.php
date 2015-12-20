@@ -1,9 +1,6 @@
 <?php
-namespace OCA\Jot\AppInfo;
 
-$application = new Application();
-
-$application->registerRoutes($this, array(
+return array(
     'routes' => array(
         array('name' => 'page#index', 'url' => '/', 'verb' => 'GET'),
         array('name' => 'jot_api#getJots', 'url' => '/api/1.0/jots/', 'verb' => 'GET'),
@@ -13,4 +10,4 @@ $application->registerRoutes($this, array(
         array('name' => 'jot_api#add_image', 'url' => '/api/1.0/jots/{id}/images', 'verb' => 'POST'),
         array('name' => 'jot_api#get_image', 'url' => '/api/1.0/jots/{jot}/images/{image}', 'verb' => 'GET')
     )
-));
+);

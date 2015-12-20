@@ -11,15 +11,10 @@
 \OCP\Util::addStyle('jot', 'main');
 \OCP\Util::addStyle('jot', 'responsive');
 
-
 ?>
 
 <div id="app">
-
 	<div id="app-content">
-
 		<?php print_unescaped($this->inc("part.cards")); ?>
-
 	</div>
-
 </div>

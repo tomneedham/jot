@@ -8,6 +8,7 @@ use OC\Hooks\BasicEmitter;
 use OCA\Jot\Lib\JotService;
 use OCP\IConfig;
 
+require(__DIR__.'/../vendor/simpledom/simple_html_dom.php');
 
 class Importer extends BasicEmitter{
 
@@ -60,13 +61,37 @@ class Importer extends BasicEmitter{
 
     }
 
-    public function importJotFromHTML($name,$content) {
+    public function importJotFromHTML($name, $content) {
         // Parse
         // TODO
         // Import
+
+        // Find just the content
+        $doc = \str_get_html($content);
+        $content = $doc->find('div.content', 0)->innerText();
+
+        if(empty($content)) {
+            return;
+        }
+
+        // Replace the <br> tags
+        $content = str_replace('<br>', "\n", $content);
+
+        // Handle lists...
+        $list = $doc->find('div.listitem');
+        if(count($list) !== 0) {
+            // Handle that
+            $content = '';
+            foreach($list as $item) {
+                $content .= ' - '.$item->find('div.text',0)->innerText()."\n";
+            }
+        }
+
         $jot = $this->jot;
+        $jot->setId(null);
         $jot->setContent($content);
-        $jot->setTitle(current(explode('.', $name)));
+        $name = current(explode('.', $name));
+        $jot->setTitle(substr($name, 1, strlen($name)));
         $this->jotService->saveJot($jot);
     }
 

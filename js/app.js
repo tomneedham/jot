@@ -137,7 +137,7 @@
 		_onClickImport: function() {
 			// First show a dialog explaining the dealio
 			OC.dialogs.info(
-				'This wizard helps you import notes from Google Keep. First, you need to visit Google Takeout to export your data. Click \'OK\' to visit the website. Once there, generate a .zip file containing only your Google Keep data, then upload this to your ownCloud.',
+				'This wizard helps you import notes from Google Keep. </br>First, you need to visit Google Takeout to export your data. Click \'OK\' to visit the website. Once there, generate a .zip file containing only your Google Keep data, then upload this to your ownCloud.',
 				'Import Wizard',
 				function() {
 					// Take then to google takeout
@@ -177,30 +177,28 @@
 			var es = new OC.EventSource(OC.generateUrl('/apps/jot/api/1.0/jots/import'), {path: path});
 			// Fire a info dialog and keep the user updated with the progress
 			OC.dialogs.info(
-				'Please wait while the import is processed. Updates will appear here.',
+				'Loading...',
 				'Importing',
 				function() {
 					// Callback for what?, when you hit ok at the end, refresh the page
+					window.location.assign((OC.generateUrl('apps/jot')));
 				},
 				false
 			);
 
-			$('#oc-dialog-1-content p').html($('#oc-dialog-1-content p').html()+'</br></br>');
-
-
 			es.listen('progress', function(message) {
 				console.log(message);
 				// Some progress occured
-				$('#oc-dialog-1-content p').html($('#oc-dialog-1-content p').html()+'</br>'+message);
+				$('#oc-dialog-3-content p').text(message);
 			});
 
 			es.listen('error', function(message) {
 				console.log(message);
-				// Failed
+				$('#oc-dialog-3-content p').text('An error occured.');
 			});
 
 			es.listen('complete', function(message) {
-				// Finished!
+				$('#oc-dialog-3-content p').text('Complete! Click OK to reload the page.');
 			});
 
 			// Refresh the page to load the new shiny content

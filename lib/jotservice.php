@@ -33,8 +33,6 @@ class JotService {
         $id = $this->getJotsFolderID($user);
         $jots = current($this->rootFolder->getUserFolder($user)->getByID($id));
         if($jots === false) {
-            // Delete from database
-            $this->config->setUserValue($user, $this->appName, 'folderID', '');
             // Recreate folder
             return current($this->rootFolder->getUserFolder($user)->getByID($this->createJotFolder($user)));
         } else {
@@ -47,12 +45,10 @@ class JotService {
      * @return is_integer
      */
     public function getJotsFolderID($user) {
-        $id = $this->config->getUserValue($user, 'jot', 'folderID');
-        if($id === '') {
+        $id = $this->config->getUserValue($user, $this->appName , 'folderID', null);
+        if(is_null($id)) {
             // We need to try creating the folder for the first time
             $id = $this->createJotFolder($user);
-            // Save the folder id
-            $this->config->setUserValue($user, $this->appName, 'folderID', $id);
         }
         return $id;
     }
@@ -64,7 +60,10 @@ class JotService {
      public function createJotFolder($user) {
          $files = $this->rootFolder->getUserFolder($user);
          $name = $files->getNonExistingName('Jots');
-         return $files->newFolder($name)->getId();
+         $id = $files->newFolder($name)->getId();
+         // Save the folder id
+         $this->config->setUserValue($user, $this->appName, 'folderID', $id);
+         return $id;
      }
 
      /**
@@ -140,7 +139,7 @@ class JotService {
     public function saveJot($jot) {
         $jotsFolder = $this->getJotsFolder($this->user);
         // Has an id?
-        if(empty($jot->getId())) {
+        if(is_null($jot->getId())) {
             // Create the file
             $name = $jotsFolder->getNonExistingName($this->createSafeFilename($jot->getTitle()));
             $jotFile = $jotsFolder->newFile($name.'.txt');
@@ -149,11 +148,12 @@ class JotService {
             $jotFile = current($jotsFolder->getById($jot->getId()));
         }
         $jotFile->putContent($jot->getTitle()."\n".$jot->getContent());
-        if($jot->getTitle().'.txt' != $jotFile->getName()) {
-            // Update the filename
-            $name = $jotsFolder->getNonExistingName($this->createSafeFilename($jot->getTitle()));
-            $jotFile->move($jotFile->getParent()->getPath().'/'.$name.'.txt');
-        }
+
+        //if($jot->getTitle().'.txt' != $jotFile->getName()) {
+        //    // Update the filename
+        //    $name = $jotsFolder->getNonExistingName($this->createSafeFilename($jot->getTitle()));
+        //    $jotFile->move($jotFile->getParent()->getPath().'/'.$name.'.txt');
+        //}
         return $jot;
     }
 

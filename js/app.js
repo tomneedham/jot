@@ -128,7 +128,7 @@
 		 */
 		updateLayout: function() {
 			this.container.isotope('layout');
-		},
+		}
 
 	}
 
@@ -139,5 +139,4 @@
 // Go go go
 $(document).ready(function() {
 	OCA.Jot.App.initialize();
-
 });

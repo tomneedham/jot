@@ -7,3 +7,5 @@
     'icon' => \OCP\Util::imagePath('jot', 'app.svg'),
     'name' => 'Jot',//\OC_L10N::get('Jot')->t('Jot'),
     ));
+
+\OCP\App::registerPersonal('jot', 'settings');

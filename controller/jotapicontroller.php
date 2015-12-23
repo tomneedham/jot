@@ -56,7 +56,7 @@ class JotApiController extends ApiController {
     public function updateItem($id, $title, $content) {
         // TODO validation
 		try {
-			$jot = $this->jotService->loadFromID($id, $this->user);
+			$jot = $this->jotService->loadFromID($id);
 			$jot->setTitle($title);
 			$jot->setContent($content);
 			$this->jotService->saveJot($jot);
@@ -91,7 +91,7 @@ class JotApiController extends ApiController {
     public function deleteItem($id) {
 		try {
 			$jot = $this->jotService->deleteJot($this->jotService->loadFromID($id));
-			return JSONResponse();
+			return new JSONResponse();
 		} catch (\Exception $e) {
 			die($e->getMessage());
 		}

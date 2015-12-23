@@ -119,7 +119,7 @@
 				}
 			});
 
-			$(this.el).find('textarea.jot-title').bind('focusout', function(e){ _self.save(); });
+			$(this.el).find('input.jot-title').bind('focusout', function(e){ _self.save(); });
 
 			$(this.el).dropzone(
 				{

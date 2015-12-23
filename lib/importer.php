@@ -40,7 +40,6 @@ class Importer extends BasicEmitter{
         $zip = $userFolder->get($path);
         $zip = new \OC_Archive_Zip($this->config->getSystemValue('datadirectory').$zip->getPath());
         $files = $zip->getFolder('Takeout/Keep');
-//die(var_dump($files));
         $images = [];
 
         foreach($files as $file) {
@@ -62,10 +61,6 @@ class Importer extends BasicEmitter{
     }
 
     public function importJotFromHTML($name, $content) {
-        // Parse
-        // TODO
-        // Import
-
         // Find just the content
         $doc = \str_get_html($content);
         $content = $doc->find('div.content', 0)->innerText();
@@ -89,8 +84,10 @@ class Importer extends BasicEmitter{
 
         $jot = $this->jot;
         $jot->setId(null);
-        $jot->setContent($content);
+        // Fix char encoding
+        $jot->setContent(html_entity_decode($content));
         $name = current(explode('.', $name));
+        // Remove slash
         $jot->setTitle(substr($name, 1, strlen($name)));
         $this->jotService->saveJot($jot);
     }

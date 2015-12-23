@@ -14,7 +14,7 @@
 		<div class="jot-item" data-mtime="<?php p($jot->getMTime()); ?>" data-id="<?php p($jot->getId()); ?>" data-type="text">
 			<div class="jot-item-content" style="padding-bottom: 5px;">
 				<a class="item-state-icon icon-close"></a>
-				<textarea placeholder="Title" rows=1 class="jot-input jot-title"><?php p($jot->getTitle()); ?></textarea>
+				<input type="text" name="title" class="jot-input jot-title" placeholder="Title" value="<?php p($jot->getTitle()); ?>"></input>
 				<textarea class="jot-input jot-content" placeholder="..." rows=1 style=""><?php p($jot->getContent()); ?></textarea>
 				<div class="jot-item-images dropzone-previews">
 					<?php foreach($jot->getImages() as $id => $url) { ?>

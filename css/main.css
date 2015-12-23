@@ -24,9 +24,17 @@ div.jot-item-content {
 	border-radius: 3px;
 }
 
-textarea.jot-title {
-    font-size: 16px;
-	font-weight: 600;
+input.jot-title {
+	display: block;
+    background: none;
+    border: 0;
+    color: black;
+    font-weight: 600;
+    padding: 0;
+    font-size: 1em;
+    width: 95%;
+    text-overflow: ellipsis;
+    margin-bottom: 9px;
 }
 
 .jot-item-content > div.expanding-wrapper {

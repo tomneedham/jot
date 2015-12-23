@@ -105,7 +105,7 @@
 				_self._startSaveTimer();
 			});
 
-			$(this.el).find('textarea.jot-title').keydown(function(e) {
+			$(this.el).find('input.jot-title').keydown(function(e) {
 				if(e.keyCode == 13){
 					e.preventDefault();
 					_self._onTitleEnter();
@@ -266,8 +266,8 @@
 		_onTitleEnter: function() {
 			// Trigger a save
 			this.save();
-			// Move to content box and close editing of title
-			$(this.el).find('.jot-content').focus();
+			// Move to end of content box and close editing of title
+			$(this.el).find('.jot-content').focus().val($(this.el).find('.jot-content').val()+' ');
 		},
 
 		/**

@@ -21,6 +21,7 @@
 						<img width=70 height=70 src="<?php p($url); ?>" alt="<?php p($id); ?>"></img>
 					<?php } ?>
 				</div>
+				<p class="modified"></p>
 			</div>
 		</div>
 		<?php } ?>

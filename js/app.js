@@ -86,8 +86,8 @@
 			var item = document.createElement('div');
 			item.innerHTML = '<div class="jot-item-content" style="padding-bottom: 5px;"><a class="item-state-icon icon-close"></a><textarea placeholder="Title" rows=1 autofocus class="jot-input jot-title">'+title+'</textarea><textarea class="jot-input jot-content" placeholder="An interesting note..." rows=1 style="">'+content+'</textarea><div class="jot-item-images dropzone-previews"></div></div>';
 			item.className = 'jot-item';
-			item.setAttribute('data-mtime', Math.floor(new Date().getTime()/1000));
 			var i = new OCA.Jot.Item(item);
+			i.setMtime(Math.floor(new Date().getTime()/1000));
 			this.prependItem(i);
 			$(i.el).find('textarea.jot-title').focus();
 			this.container.isotope('updateSortData').isotope();

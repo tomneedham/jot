@@ -38,6 +38,9 @@
 
 		saveTimer: null,
 
+		/* How frequently to update the modified time on an item */
+		dateRefreshInterval: 5000,
+
 		initialise: function(el) {
 			this.el = el;
 			// get id, if there then this.new = false, else id is returnd on first save
@@ -62,6 +65,18 @@
 			return $(this.el).find('.jot-content').val();
 		},
 
+		getMtime: function() {
+			return $(this.el).attr('data-mtime');
+		},
+
+		/**
+		 * Store and and update the displayed mtime
+		 */
+		setMtime: function(mtime) {
+			$(this.el).attr('data-mtime', mtime);
+			$(this.el).find('p.modified').text(OC.Util.relativeModifiedDate(parseInt(mtime)*1000));
+		},
+
 		/**
 		 * Fired after the item is actually inserted into the DOM
 		 */
@@ -69,9 +84,6 @@
 
 			var _self = this,
 				_selfTextAreaContent = $(this.el).find('textarea.jot-content');
-
-			// Bind events
-			$('textarea.jot-input').expanding({ update: OCA.Jot.App.updateLayout() });
 
 			// Show delete icon on hover
 			$(this.el).hover(
@@ -109,8 +121,6 @@
 
 			$(this.el).find('textarea.jot-title').bind('focusout', function(e){ _self.save(); });
 
-			OCA.Jot.App.updateLayout();
-
 			$(this.el).dropzone(
 				{
 					//url: OC.generateUrl('/apps/jot/api/1.0/jots/'+this.getId()+'/images'),
@@ -127,6 +137,16 @@
 					}
 				}
 			);
+
+			// Add the date and update it
+			_self.setMtime(_self.getMtime());
+			setInterval(function() {
+				_self.setMtime(_self.getMtime());
+			}, this.dateRefreshInterval);
+
+			// Finally fix anything querky with the layout
+			$('textarea.jot-input').expanding({ update: OCA.Jot.App.updateLayout() });
+			OCA.Jot.App.updateLayout();
 
 		},
 
@@ -153,7 +173,8 @@
 					_self.setIcon('done');
 					setTimeout(function(){ _self.setIcon('delete') }, 1000);
 					_self.setId(data.id);
-					_self.new = false
+					_self.new = false;
+					_self.setMtime(_self.getMtime());
 				});
 
 				request.fail(function(jqXHR) {
@@ -181,7 +202,7 @@
 					// Update the values
 					$(_self.el).find('.jot-title').val(data.title);
 					$(_self.el).find('.jot-content').val(data.content);
-					$(_self.el).attr('data-mtime', data.mtime);
+					_self.setMtime(data.mtime);
 					OCA.Jot.App.container.isotope('updateSortData').isotope(); //TODO broken Can result in some movement of the item after auto saving
 				});
 

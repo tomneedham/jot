@@ -70,7 +70,6 @@
 
 			es.listen('error', function(message) {
 				console.log(message);
-				$('#oc-dialog-3-content p').text('An error occured.');
 			});
 
 			es.listen('complete', function(message) {

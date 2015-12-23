@@ -40,22 +40,18 @@ class Importer extends BasicEmitter{
         $zip = $userFolder->get($path);
         $zip = new \OC_Archive_Zip($this->config->getSystemValue('datadirectory').$zip->getPath());
         $files = $zip->getFolder('Takeout/Keep');
-        $images = [];
-
+        // Count how many notes we have
+        $html = [];
         foreach($files as $file) {
-
-            $eventSource->send('progress', 'Handling: '.$file);
-            // Split into types
             if(pathinfo($file, PATHINFO_EXTENSION) === 'html') {
-                // Handle the jot import
-                $eventSource->send('progress', 'Adding Jot: '.basename($file));
-                $this->importJotFromHTML($file, $zip->getFile('Takeout/Keep'.$file));
-            } else if(pathinfo($file, PATHINFO_EXTENSION) === 'jpg') {
-                // Save for future image handling
-                $eventSource->send('progress', 'Image found: '.$file);
-                $images[] = $file;
-                // TODO
+                $html[] = $file;
             }
+        }
+        $num = count($html);
+        $eventSource->send('progress', 'Found '.$num.' notes to import');
+        for($i=0; $i<$num; $i++) {
+            $eventSource->send('progress', 'Importing '.($i+1).' of '.$num.': '.$html[$i]);
+            $this->importJotFromHTML($html[$i], $zip->getFile('Takeout/Keep'.$html[$i]));
         }
 
     }
@@ -63,6 +59,9 @@ class Importer extends BasicEmitter{
     public function importJotFromHTML($name, $content) {
         // Find just the content
         $doc = \str_get_html($content);
+        if(!$doc) {
+            return; // TODO throw exception
+        }
         $content = $doc->find('div.content', 0)->innerText();
 
         if(empty($content)) {
